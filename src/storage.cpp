@@ -124,6 +124,9 @@ bool yeneid_scan_getnextslot_internal(YeneidScanDesc scan,
 
 
   while (1) {
+    /* Don't rely on CHECK_FOR_INTERRUPTS() calls at lower level */
+    //CHECK_FOR_INTERRUPTS();
+
     if (scan->page_ptr == nullptr) {
       if (scan->current_block == h->npagecnt) {
         break;
@@ -133,7 +136,7 @@ bool yeneid_scan_getnextslot_internal(YeneidScanDesc scan,
     }
 
     if (scan->page_ptr + 4 > scan->buf + BLCKSZ) {
-      scan->page_ptr == nullptr;
+      scan->page_ptr = nullptr;
       continue;
     }
 
@@ -169,6 +172,29 @@ void yeneid_scan_cleanup_internal(YeneidScanDesc scan) {
 void yeneid_scan_init(YeneidScanDesc scan) {
   RelationOpenSmgr(scan->rs_base.rs_rd);
   scan-> YeneidMetadataState = new YeneidMetadataState(RelationGetRelid(scan->rs_base.rs_rd), scan->rs_base.rs_rd->rd_smgr);
+
+  // scan->smgrao = smgrao();
+
+  // int			fileFlags = O_RDWR | PG_BINARY;
+
+
+	// auto relname = RelationGetRelationName(scan->rs_base.rs_rd);
+
+	// auto nspname = get_namespace_name(RelationGetNamespace(aorel));
+
+
+  // char		filenamepath[MAXPGPATH];
+  // int			pseudoSegNo;
+  // File		fd;
+  // char * relname;
+  // char *nspname;
+
+  // /* Open and truncate the relation segfile */
+  // MakeAOSegmentFileName(scan->rs_base.rs_rd, segno, 1, &pseudoSegNo, filenamepath);
+
+	// scan->fd = scan->smgr_ao->smgr_AORelOpenSegFile(RelationGetRelid(scan->rs_base.rs_rd), nspname, relname, filenamepath, O_RDWR | PG_BINARY, 1);
+
+  // pfree(nspname);
 }
 
 

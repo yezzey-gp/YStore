@@ -45,7 +45,7 @@ EXTERNC bool yeneid_scan_getnextslot_internal(YeneidScanDesc scan,
 
 EXTERNC void yeneid_tuple_insert_internal(Relation relation,
                                           TupleTableSlot *slot, CommandId cid,
-                                          int options, BulkInsertState bistate);
+                                          int options, BulkInsertState bistate, int seg);
 
 
 EXTERNC void yeneid_scan_cleanup_internal(YeneidScanDesc scan);

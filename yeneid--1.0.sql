@@ -26,3 +26,19 @@ VOLATILE
 EXECUTE ON ALL SEGMENTS
 LANGUAGE C STRICT;
 
+
+CREATE OR REPLACE FUNCTION
+yeneid_relation(reloid OID)
+RETURNS void
+
+AS $$ 
+
+BEGIN
+
+    PERFORM yeneid_define_relation_offload_policy_internal(reloid);
+
+    PERFORM yeneid_define_relation_offload_policy_internal_seg(reloid);
+
+END;
+
+$$ LANGUAGE PLPGSQL;

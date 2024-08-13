@@ -23,6 +23,9 @@ typedef struct YeneidScanDescData {
   int current_block;
   char * page_ptr;
 
+  struct f_smgr_ao * smgrao;
+  File		fd;
+
   char buf[BLCKSZ];
 
   // field of type YeneidMetadataState*

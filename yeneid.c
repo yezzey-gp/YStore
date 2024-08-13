@@ -160,7 +160,7 @@ static TransactionId yeneid_index_delete_tuples(Relation rel,
 
 static void yeneid_tuple_insert(Relation relation, TupleTableSlot *slot,
                                 CommandId cid, int options,
-                                BulkInsertState bistate) {
+                                BulkInsertState bistate, int segindex) {
   /* nothing to do */
 
   (void)yeneid_tuple_insert_internal(relation, slot, cid, options, bistate);

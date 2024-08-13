@@ -76,21 +76,21 @@ void YeneidATExecSetTableSpace(Relation aorel, Oid reloid,
   /* drop old relation, and close new one */
 //   RelationDropStoragePure(aorel);
 
-  RelationDropStorage(aorel);
+  // RelationDropStorage(aorel);
 
-  /* update the pg_class row */
-  if (desttablespace_oid != HEAPYTABLESPACE_OID) {
-    rd_rel->relfilenode = GetNewRelFileNode(desttablespace_oid, NULL,
-                                            aorel->rd_rel->relpersistence);
-  }
-  rd_rel->reltablespace = desttablespace_oid;
+//   /* update the pg_class row */
+//   if (desttablespace_oid != YEZZEYTABLESPACE_OID) {
+//     rd_rel->relfilenode = GetNewRelFileNode(desttablespace_oid, NULL,
+//                                             aorel->rd_rel->relpersistence);
+//   }
+//   rd_rel->reltablespace = desttablespace_oid;
 
-#if GP_VERSION_NUM < 70000
-  simple_heap_update(pg_class, &tuple->t_self, tuple);
-  CatalogUpdateIndexes(pg_class, tuple);
-#else
-  CatalogTupleUpdate(pg_class, &tuple->t_self, tuple);
-#endif
+// #if GP_VERSION_NUM < 70000
+//   simple_heap_update(pg_class, &tuple->t_self, tuple);
+//   CatalogUpdateIndexes(pg_class, tuple);
+// #else
+//   CatalogTupleUpdate(pg_class, &tuple->t_self, tuple);
+// #endif
 
   /*
     * Open and lock the gp_fastsequence catalog table.
@@ -100,24 +100,27 @@ void YeneidATExecSetTableSpace(Relation aorel, Oid reloid,
   auto values = (Datum*) palloc0(sizeof(Datum) * tupleDesc->natts);
   auto nulls = (bool*)palloc0(sizeof(bool) * tupleDesc->natts);
 
-  int16 arr[2] = {0, 1};
+  const uint sz = 69;
+
+  int16 arr[sz];
+  for (auto i = 0; i < sz; ++ i) arr[i] = i & 1;
 
   values[Anum_yezzey_distrib_reloid - 1] = ObjectIdGetDatum(reloid);
-  values[Anum_yezzey_distrib_distkey - 1] = PointerGetDatum(
-      buildint2vector(arr, 2)
+  values[Anum_yezzey_distrib_y_key_distriubtion - 1] = PointerGetDatum(
+      buildint2vector(arr, sz)
   );
 
   auto ytuple = heaptuple_form_to(tupleDesc, values, nulls, NULL, NULL);
 
   CatalogTupleInsert(yeneid_distrib, ytuple);
 
-  RelationCloseSmgr(aorel);
+  // RelationCloseSmgr(aorel);
 
-  aorel->rd_node.relNode = rd_rel->relfilenode ;
+  // aorel->rd_node.relNode = rd_rel->relfilenode ;
 
-  aorel->rd_node.spcNode = desttablespace_oid;
+  // aorel->rd_node.spcNode = desttablespace_oid;
 
-  RelationOpenSmgr(aorel);
+  // RelationOpenSmgr(aorel);
 
 
 //   RelationCreateStorage(aorel->rd_node, rd_rel->relpersistence, SMGR_MD);
@@ -164,7 +167,7 @@ void YeneidDefineOffloadPolicy(Oid reloid) {
   auto aorel = relation_open(reloid, AccessExclusiveLock);
 
   /* change relation tablespace */
-  (void)YeneidATExecSetTableSpace(aorel, reloid, HEAPYTABLESPACE_OID);
+  (void)YeneidATExecSetTableSpace(aorel, reloid, YEZZEYTABLESPACE_OID);
 
   relation_close(aorel, AccessExclusiveLock);
 }
